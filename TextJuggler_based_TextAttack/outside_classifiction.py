@@ -33,7 +33,7 @@
 #             pass
 #             # pip install aliyun-python-sdk-core
 #             # pip install aliyun-python-sdk-nlp-automl
-#             self.client = AcsClient("LTAI5tPjqYwFAeDDMebGq92Y", "a7YJWGb9eqhZnVICpsmrQ4lCDUHpUi", "cn-hangzhou")
+#             self.client = AcsClient("xxx", "xxx", "cn-hangzhou")
 #         elif self.platform == 'google':
 #             # self.client = language_v1.LanguageServiceClient()
 #             pass
