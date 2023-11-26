@@ -116,7 +116,7 @@ class EvaluateText:
     use = UniversalSentenceEncoder()
     sim_metric = torch.nn.CosineSimilarity(dim=1)
 
-    def __init__(self, pre_training_model, recipe, limit_perturb_len, text_len=-1, path='./results'):
+    def __init__(self, pre_training_model, recipe,  text_len=-1, path='./results'):
         self.csv_path = os.path.join(path, pre_training_model + '_' + recipe + '.csv')
         print(self.csv_path)
         self.pre_model = pre_training_model
@@ -131,11 +131,7 @@ class EvaluateText:
         self.atk_Accuracy = 0
         self.pert_rate = []
         self.ground_truth = []
-        self.limit_perturb_len = limit_perturb_len
-        if self.limit_perturb_len < 1.:
-            self.limit_rate = True
-        else:
-            self.limit_rate = False
+
         self.status = []
         self.wash_texts(start_position=0, number=text_len)
 
@@ -180,17 +176,14 @@ class EvaluateText:
                 sentence_len = words_len_from_text(perturbed_texts[i])
                 words_len.append(sentence_len)
                 pert = change_len / sentence_len
-                if (self.limit_rate and self.limit_perturb_len >= pert) or (
-                        not self.limit_rate and self.limit_perturb_len >= change_len):
-                    self.queries_num.append(query[i])
-                    self.sentences_change_len.append(change_len)
-                    self.sentences_len.append(sentence_len)
-                    self.adv_texts.append(process_string(perturbed_texts[i]))
-                    self.ini_texts.append(process_string(original_texts[i]))
-                    self.pert_rate.append(pert)
-                    self.ground_truth.append(ground_truth[i])
-                else:
-                    fail += 1
+                self.queries_num.append(query[i])
+                self.sentences_change_len.append(change_len)
+                self.sentences_len.append(sentence_len)
+                self.adv_texts.append(process_string(perturbed_texts[i]))
+                self.ini_texts.append(process_string(original_texts[i]))
+                self.pert_rate.append(pert)
+                self.ground_truth.append(ground_truth[i])
+
             elif result_type[i] == 'Failed':
                 fail += 1
                 self.status[i] = 1
@@ -308,6 +301,5 @@ class EvaluateText:
 if __name__ == '__main__':
     evaluate = EvaluateText(pre_training_model='bert-base-uncased-ag-news',
                             recipe='textfooler',
-                            limit_perturb_len=9999999,
                             text_len=20000, path='./result')
     evaluate.eval()
